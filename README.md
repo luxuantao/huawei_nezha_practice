@@ -1,7 +1,7 @@
 # huawei_nezha_practice
 华为哪吒模型实践指南
 
-
+详细说明： https://zhuanlan.zhihu.com/p/360470015
 
 预训练权重下载：
 
