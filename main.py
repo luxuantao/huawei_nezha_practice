@@ -1,3 +1,4 @@
+import os
 from tqdm import tqdm
 import torch
 from torch.utils.data import DataLoader, TensorDataset
@@ -7,7 +8,6 @@ from NEZHA import nezha_utils
 import numpy as np
 from transformers import BertTokenizer, AdamW, AutoModel, AutoTokenizer, AutoModelForSequenceClassification
 
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 epochs = 5
 
@@ -16,10 +16,9 @@ random.seed(seed)
 np.random.seed(seed)
 torch.manual_seed(seed)
 
-
 if __name__ == '__main__':
-    # tokenizer = AutoTokenizer.from_pretrained("hfl/chinese-roberta-wwm-ext")
-    tokenizer = BertTokenizer.from_pretrained(pretrained_model_name_or_path='NEZHA/nezha-base-wwm', do_lower_case=True)
+    pre_model_dir = 'NEZHA/nezha-base-wwm/'  # 填写预训练模型所在目录
+    tokenizer = BertTokenizer(os.path.join(pre_model_dir, 'vocab.txt'), do_lower_case=True)
 
     data = []
     with open('data.txt', 'r', encoding='utf-8') as f:
@@ -29,7 +28,7 @@ if __name__ == '__main__':
             text = tokenizer.encode_plus(text, max_length=128, padding='max_length', truncation=True)
             data.append((text, label))
     random.shuffle(data)
-    train_data = data[:int(len(data)*0.8)]
+    train_data = data[:int(len(data) * 0.8)]
     test_data = data[len(train_data):]
 
     input_ids_train = torch.LongTensor([each[0]['input_ids'] for each in train_data]).to(device)
@@ -48,9 +47,9 @@ if __name__ == '__main__':
     train_loader = DataLoader(dataset=train_dataset, batch_size=8, shuffle=True)
     test_loader = DataLoader(dataset=test_dataset, batch_size=8, shuffle=False)
 
-    Bert_config = BertConfig.from_json_file('NEZHA/nezha-base-wwm/bert_config.json')
+    Bert_config = BertConfig.from_json_file(os.path.join(pre_model_dir, 'config.json'))
     model = BertForSequenceClassification(config=Bert_config, num_labels=2)
-    nezha_utils.torch_init_model(model, 'NEZHA/nezha-base-wwm/pytorch_model.bin')
+    nezha_utils.torch_init_model(model, os.path.join(pre_model_dir, 'pytorch_model.bin'))
 
     # model = AutoModelForSequenceClassification.from_pretrained("hfl/chinese-roberta-wwm-ext")
     model.to(device)
