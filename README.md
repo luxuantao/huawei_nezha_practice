@@ -10,5 +10,3 @@
 - nezha-base-wwm [百度网盘链接](https://pan.baidu.com/s/1itZ_wdU6JdpXx2saK_zQhw) 提取码: ysg3
 - nezha-large-wwm [百度网盘链接](https://pan.baidu.com/s/1_QdimUFM9dD3q4JtAlAU3g) 提取码: 8dig
 
-下载好权重后，放到NEZHA目录下。
-
